@@ -1,3 +1,9 @@
 # Weathering the Wait Time Project
 # SI 206 Final Project
 # Authors: Nadia Reddin, Hannah Nadel
+
+import sqlite3
+import requests
+import json
+import time
+import matplotlib.pyplot as plt
