@@ -12,11 +12,11 @@ from hannah import *
 from Nadia import *
 
 
-DB_NAME = 'weathering_the_wait_time.db'
+NAME = 'weathering_the_wait_time.db'
 
 
 def create_tables():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(NAME)
     cur = conn.cursor()
 
     cur.execute('''CREATE TABLE IF NOT EXISTS DisneylandRides (
