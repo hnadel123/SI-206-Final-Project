@@ -1,3 +1,7 @@
+import requests
+import time
+import sqlite3
+
 def fetch_disneyland_data():
     url = 'https://queue-times.com/parks/16/queue_times.json'
     response = requests.get(url)

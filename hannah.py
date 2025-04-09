@@ -1,3 +1,7 @@
+import requests
+import time
+import sqlite3
+
 def fetch_weather_data(timestamp):
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
