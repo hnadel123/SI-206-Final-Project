@@ -8,7 +8,7 @@ import json
 import time
 import matplotlib.pyplot as plt
 
-# Database setup
+
 DB_NAME = 'weathering_the_wait_time.db'
 
 
@@ -16,7 +16,6 @@ def create_tables():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    # Create Disneyland Rides table
     cur.execute('''CREATE TABLE IF NOT EXISTS DisneylandRides (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         ride_name TEXT,
@@ -26,7 +25,7 @@ def create_tables():
         timestamp TEXT
     )''')
 
-    # Create Weather table
+    
     cur.execute('''CREATE TABLE IF NOT EXISTS Weather (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         temperature REAL,
@@ -60,7 +59,7 @@ def fetch_disneyland_data():
     cur = conn.cursor()
 
     for land in data['lands']:
-        for ride in land['rides'][:25]:  # Limiting to 25 items per run
+        for ride in land['rides'][:25]: 
             ride_name = ride['name']
             wait_time = ride['wait_time']
             ride_status = ride.get('status', 'Unknown')
