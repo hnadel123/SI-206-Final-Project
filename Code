@@ -12,11 +12,11 @@ from hannah import *
 from Nadia import *
 
 
-NAME = 'weathering_the_wait_time.db'
+DB_NAME = 'weathering_the_wait_time.db'
 
 
 def create_tables():
-    conn = sqlite3.connect(NAME)
+    conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
     cur.execute('''CREATE TABLE IF NOT EXISTS DisneylandRides (
@@ -28,12 +28,10 @@ def create_tables():
         timestamp TEXT
     )''')
 
-    
     cur.execute('''CREATE TABLE IF NOT EXISTS Weather (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         temperature REAL,
         condition TEXT,
-        wind_speed REAL,
         humidity REAL,
         precipitation REAL,
         timestamp TEXT
@@ -52,29 +50,13 @@ def create_tables():
     conn.close()
 
 
-
-def combine_data():
-    conn = sqlite3.connect(NAME)
-    cur = conn.cursor()
-
-    cur.execute('''
-        INSERT INTO CombinedData (ride_name, wait_time, temperature, condition, timestamp)
-        SELECT DR.ride_name, DR.wait_time, W.temperature, W.condition, DR.timestamp
-        FROM DisneylandRides AS DR
-        JOIN Weather AS W
-        ON DR.timestamp = W.timestamp;
-    ''')
-
-    conn.commit()
-    conn.close()
-
-
 def main():
     create_tables()
-    fetch_disneyland_data()
-    fetch_weather_data()
-    combine_data()
-
+    timestamp = time.strftime('%Y-%m-%d %H:00:00')
+    fetch_disneyland_data(timestamp)
+    fetch_weather_data(timestamp)
+    combine_data(timestamp)
+    plot_wait_times_vs_temperature()
 
 if __name__ == '__main__':
     main()
