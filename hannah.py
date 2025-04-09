@@ -1,6 +1,9 @@
+
 import requests
-import time
 import sqlite3
+from datetime import datetime
+
+DB_NAME = 'weathering_the_wait_time.db'
 
 def fetch_weather_data(timestamp):
     url = "https://api.open-meteo.com/v1/forecast"
@@ -31,9 +34,10 @@ def fetch_weather_data(timestamp):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    cur.execute('''INSERT INTO Weather (temperature, condition, humidity, precipitation, timestamp)
-                   VALUES (?, ?, ?, ?, ?)''', 
-                   (temperature, condition, humidity, precipitation, timestamp))
+    cur.execute('''
+        INSERT INTO Weather (temperature, condition, humidity, precipitation, timestamp)
+        VALUES (?, ?, ?, ?, ?)''',
+        (temperature, condition, humidity, precipitation, timestamp))
 
     conn.commit()
     conn.close()

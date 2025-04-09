@@ -2,21 +2,16 @@
 # SI 206 Final Project
 # Authors: Nadia Reddin, Hannah Nadel
 
-import requests
 import time
 import sqlite3
-from datetime import datetime
 import matplotlib.pyplot as plt
+from hannah import fetch_weather_data
+from Nadia import fetch_disneyland_data
 
-from hannah import *
-from Nadia import *
-
-
-NAME = 'weathering_the_wait_time.db'
-
+DB_NAME = 'weathering_the_wait_time.db'
 
 def create_tables():
-    conn = sqlite3.connect(NAME)
+    conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
     cur.execute('''CREATE TABLE IF NOT EXISTS DisneylandRides (
@@ -49,6 +44,37 @@ def create_tables():
     conn.commit()
     conn.close()
 
+def combine_data(timestamp):
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute('''
+        INSERT INTO CombinedData (ride_name, wait_time, temperature, condition, timestamp)
+        SELECT DR.ride_name, DR.wait_time, W.temperature, W.condition, DR.timestamp
+        FROM DisneylandRides AS DR
+        JOIN Weather AS W ON DR.timestamp = W.timestamp
+        WHERE DR.timestamp = ?''', (timestamp,))
+
+    conn.commit()
+    conn.close()
+
+def plot_wait_times_vs_temperature():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute('SELECT temperature, wait_time FROM CombinedData')
+    results = cur.fetchall()
+    conn.close()
+
+    temps = [row[0] for row in results]
+    waits = [row[1] for row in results]
+
+    plt.scatter(temps, waits)
+    plt.xlabel("Temperature (°C)")
+    plt.ylabel("Wait Time (minutes)")
+    plt.title("Disneyland Ride Wait Times vs. Temperature")
+    plt.grid(True)
+    plt.show()
 
 def main():
     create_tables()
@@ -60,3 +86,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
