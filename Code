@@ -36,7 +36,6 @@ def create_tables():
         timestamp TEXT
     )''')
 
-    # Create Combined Data table
     cur.execute('''CREATE TABLE IF NOT EXISTS CombinedData (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         ride_name TEXT,
