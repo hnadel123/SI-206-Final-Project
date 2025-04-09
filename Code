@@ -2,10 +2,9 @@
 # SI 206 Final Project
 # Authors: Nadia Reddin, Hannah Nadel
 
-import sqlite3
 import requests
-import json
 import time
+from datetime import datetime
 import matplotlib.pyplot as plt
 
 
@@ -54,7 +53,7 @@ def fetch_disneyland_data():
     response = requests.get(url)
     data = response.json()
 
-    conn = sqlite3.connect(NAME)
+    conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
     for land in data['lands']:
@@ -84,7 +83,7 @@ def fetch_weather_data():
     precipitation = data['precip']
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
 
-    conn = sqlite3.connect(NAME)
+    conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
     cur.execute('''INSERT INTO Weather (temperature, condition, wind_speed, humidity, precipitation, timestamp)
@@ -95,7 +94,7 @@ def fetch_weather_data():
 
 
 def combine_data():
-    conn = sqlite3.connect(NAME)
+    conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
     cur.execute('''
