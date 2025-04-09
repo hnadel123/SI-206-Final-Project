@@ -7,3 +7,117 @@ import requests
 import json
 import time
 import matplotlib.pyplot as plt
+
+# Database setup
+DB_NAME = 'weathering_the_wait_time.db'
+
+
+def create_tables():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    # Create Disneyland Rides table
+    cur.execute('''CREATE TABLE IF NOT EXISTS DisneylandRides (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ride_name TEXT,
+        wait_time INTEGER,
+        ride_status TEXT,
+        ride_type TEXT,
+        timestamp TEXT
+    )''')
+
+    # Create Weather table
+    cur.execute('''CREATE TABLE IF NOT EXISTS Weather (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        temperature REAL,
+        condition TEXT,
+        wind_speed REAL,
+        humidity REAL,
+        precipitation REAL,
+        timestamp TEXT
+    )''')
+
+    # Create Combined Data table
+    cur.execute('''CREATE TABLE IF NOT EXISTS CombinedData (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ride_name TEXT,
+        wait_time INTEGER,
+        temperature REAL,
+        condition TEXT,
+        timestamp TEXT
+    )''')
+
+    conn.commit()
+    conn.close()
+
+
+def fetch_disneyland_data():
+    url = 'https://queue-times.com/parks/16/queue_times.json'
+    response = requests.get(url)
+    data = response.json()
+
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    for land in data['lands']:
+        for ride in land['rides'][:25]:  # Limiting to 25 items per run
+            ride_name = ride['name']
+            wait_time = ride['wait_time']
+            ride_status = ride.get('status', 'Unknown')
+            ride_type = ride.get('type', 'Unknown')
+            timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+
+            cur.execute('''INSERT INTO DisneylandRides (ride_name, wait_time, ride_status, ride_type, timestamp)
+                           VALUES (?, ?, ?, ?, ?)''', (ride_name, wait_time, ride_status, ride_type, timestamp))
+
+    conn.commit()
+    conn.close()
+
+
+def fetch_weather_data():
+    url = 'http://api.weatherstack.com/current?access_key=114493980920155d0343dfc9594ed16c&query=Anaheim'
+    response = requests.get(url)
+    data = response.json()['current']
+
+    temperature = data['temperature']
+    condition = data['weather_descriptions'][0]
+    wind_speed = data['wind_speed'] 
+    humidity = data['humidity']
+    precipitation = data['precip']
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute('''INSERT INTO Weather (temperature, condition, wind_speed, humidity, precipitation, timestamp)
+                   VALUES (?, ?, ?, ?, ?, ?)''', (temperature, condition, wind_speed, humidity, precipitation, timestamp))
+
+    conn.commit()
+    conn.close()
+
+
+def combine_data():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute('''
+        INSERT INTO CombinedData (ride_name, wait_time, temperature, condition, timestamp)
+        SELECT DR.ride_name, DR.wait_time, W.temperature, W.condition, DR.timestamp
+        FROM DisneylandRides AS DR
+        JOIN Weather AS W
+        ON DR.timestamp = W.timestamp;
+    ''')
+
+    conn.commit()
+    conn.close()
+
+
+def main():
+    create_tables()
+    fetch_disneyland_data()
+    fetch_weather_data()
+    combine_data()
+
+
+if __name__ == '__main__':
+    main()
