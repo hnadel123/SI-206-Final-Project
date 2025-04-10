@@ -1,3 +1,10 @@
+import requests
+import time
+import sqlite3
+
+DB_NAME = "weathering_the_wait_time.db"
+print(DB_NAME)
+
 def fetch_weather_data(timestamp):
     url = "https://api.open-meteo.com/v1/forecast"
     params = {

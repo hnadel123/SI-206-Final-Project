@@ -8,58 +8,13 @@ import time
 import sqlite3
 from datetime import datetime
 import matplotlib.pyplot as plt
+import hannah
+import Nadia
 
-DB_NAME = 'weathering_the_wait_time.db'
+DB_NAME = "weathering_the_wait_time.db"
+print(DB_NAME)
 
 
-def create_tables():
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
-
-    cur.execute('''CREATE TABLE IF NOT EXISTS DisneyParks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    country INTEGER,
-    continent TEXT,
-    latitude REAL,
-    longitude REAL,
-    timezone TEXT,
-    api_id INTEGER UNIQUE
-    )''')
-
-    cur.execute('''
-    CREATE TABLE IF NOT EXISTS DisneyRides (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE, 
-    park_id INTEGER,
-    status TEXT, 
-    wait_time REAL,
-    time_accessed DATETIME,
-    FOREIGN KEY (park_id) REFERENCES DisneyParks(id)
-    )
-    ''')
-
-    cur.execute('''CREATE TABLE IF NOT EXISTS Weather (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    latitude REAL,
-    longitude REAL,
-    temperature REAL,
-    precipitation REAL,
-    rain REAL,
-    cloud_cover REAL,
-    time_accessed DATETIME
-    )''')
- 
-    conn.commit()
-    conn.close()
-
-import requests
-import time
-import sqlite3
-from datetime import datetime
-import matplotlib.pyplot as plt
-
-DB_NAME = 'weathering_the_wait_time.db'
 
 
 def create_tables():
@@ -102,6 +57,8 @@ def create_tables():
  
     conn.commit()
     conn.close()
+
+    
 def plot_wait_times_vs_temperature():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
@@ -145,11 +102,13 @@ def test():
     conn.close()
 
 
+
+
 def main():
     create_tables()
     timestamp = time.strftime('%Y-%m-%d %H:00:00')
-    fetch_disneyland_data(timestamp)
-    fetch_weather_data(timestamp)
+    Nadia.fetch_disneyland_data(timestamp)
+    hannah.fetch_weather_data(timestamp)
     test()
 
 if __name__ == '__main__':
