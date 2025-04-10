@@ -2,62 +2,106 @@
 # SI 206 Final Project
 # Authors: Nadia Reddin, Hannah Nadel
 
+
+import requests
 import time
 import sqlite3
+from datetime import datetime
 import matplotlib.pyplot as plt
-from hannah import fetch_weather_data
-from Nadia import fetch_disneyland_data
 
 DB_NAME = 'weathering_the_wait_time.db'
+
 
 def create_tables():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    cur.execute('''CREATE TABLE IF NOT EXISTS DisneylandRides (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        ride_name TEXT,
-        wait_time INTEGER,
-        ride_status TEXT,
-        ride_type TEXT,
-        timestamp TEXT
+    cur.execute('''CREATE TABLE IF NOT EXISTS DisneyParks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    country INTEGER,
+    continent TEXT,
+    latitude REAL,
+    longitude REAL,
+    timezone TEXT,
+    api_id INTEGER UNIQUE
     )''')
+
+    cur.execute('''
+    CREATE TABLE IF NOT EXISTS DisneyRides (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE, 
+    park_id INTEGER,
+    status TEXT, 
+    wait_time REAL,
+    time_accessed DATETIME,
+    FOREIGN KEY (park_id) REFERENCES DisneyParks(id)
+    )
+    ''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS Weather (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        temperature REAL,
-        condition TEXT,
-        humidity REAL,
-        precipitation REAL,
-        timestamp TEXT
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    latitude REAL,
+    longitude REAL,
+    temperature REAL,
+    precipitation REAL,
+    rain REAL,
+    cloud_cover REAL,
+    time_accessed DATETIME
     )''')
-
-    cur.execute('''CREATE TABLE IF NOT EXISTS CombinedData (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        ride_name TEXT,
-        wait_time INTEGER,
-        temperature REAL,
-        condition TEXT,
-        timestamp TEXT
-    )''')
-
+ 
     conn.commit()
     conn.close()
 
-def combine_data(timestamp):
+import requests
+import time
+import sqlite3
+from datetime import datetime
+import matplotlib.pyplot as plt
+
+DB_NAME = 'weathering_the_wait_time.db'
+
+
+def create_tables():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    cur.execute('''
-        INSERT INTO CombinedData (ride_name, wait_time, temperature, condition, timestamp)
-        SELECT DR.ride_name, DR.wait_time, W.temperature, W.condition, DR.timestamp
-        FROM DisneylandRides AS DR
-        JOIN Weather AS W ON DR.timestamp = W.timestamp
-        WHERE DR.timestamp = ?''', (timestamp,))
+    cur.execute('''CREATE TABLE IF NOT EXISTS DisneyParks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    country INTEGER,
+    continent TEXT,
+    latitude REAL,
+    longitude REAL,
+    timezone TEXT,
+    api_id INTEGER UNIQUE
+    )''')
 
+    cur.execute('''
+    CREATE TABLE IF NOT EXISTS DisneyRides (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE, 
+    park_id INTEGER,
+    status TEXT, 
+    wait_time REAL,
+    time_accessed DATETIME,
+    FOREIGN KEY (park_id) REFERENCES DisneyParks(id)
+    )
+    ''')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS Weather (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    latitude REAL,
+    longitude REAL,
+    temperature REAL,
+    precipitation REAL,
+    rain REAL,
+    cloud_cover REAL,
+    time_accessed DATETIME
+    )''')
+ 
     conn.commit()
     conn.close()
-
 def plot_wait_times_vs_temperature():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
@@ -76,14 +120,37 @@ def plot_wait_times_vs_temperature():
     plt.grid(True)
     plt.show()
 
+
+def test():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute('''
+        SELECT p.name, AVG(r.wait_time), wx.temperature
+        FROM DisneyParks p
+        JOIN DisneyRides r ON r.park_id = p.id
+        JOIN Weather wx ON wx.latitude = p.latitude
+                         AND wx.longitude = p.longitude
+                         AND wx.time_accessed = r.time_accessed
+        WHERE wx.temperature < 30
+        GROUP BY p.name, wx.temperature
+    ''')
+
+    results = cur.fetchall()
+
+    print("Average Wait Time per Park when Temperature < 30°C:")
+    for row in results:
+        print(f"Park: {row[0]} | Avg Wait Time: {row[1]:.2f} min | Temp: {row[2]}°C")
+
+    conn.close()
+
+
 def main():
     create_tables()
     timestamp = time.strftime('%Y-%m-%d %H:00:00')
     fetch_disneyland_data(timestamp)
     fetch_weather_data(timestamp)
-    combine_data(timestamp)
-    plot_wait_times_vs_temperature()
+    test()
 
 if __name__ == '__main__':
     main()
-

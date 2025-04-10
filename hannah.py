@@ -1,43 +1,28 @@
-
-import requests
-import sqlite3
-from datetime import datetime
-
-DB_NAME = 'weathering_the_wait_time.db'
-
 def fetch_weather_data(timestamp):
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
-        "latitude": 34.0522,
-        "longitude": -118.2437,
-        "hourly": "temperature_2m,precipitation,relative_humidity_2m",
-        "timezone": "America/Los_Angeles"
+        "latitude": -180,
+        "longitude": -180,
+        "current": ["temperature_2m", "precipitation", "rain", "cloud_cover"],
+        "forecast_days": 1
     }
-
-    response = requests.get(url, params=params)
-    data = response.json()
-
-    now = datetime.now().strftime("%Y-%m-%dT%H:00")
-    times = data["hourly"]["time"]
-
-    try:
-        idx = times.index(now)
-    except ValueError:
-        print("Current hour's weather not available.")
-        return
-
-    temperature = data["hourly"]["temperature_2m"][idx]
-    precipitation = data["hourly"]["precipitation"][idx]
-    humidity = data["hourly"]["relative_humidity_2m"][idx]
-    condition = "Rainy" if precipitation > 0 else "Clear"
-
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    cur.execute('''
-        INSERT INTO Weather (temperature, condition, humidity, precipitation, timestamp)
-        VALUES (?, ?, ?, ?, ?)''',
-        (temperature, condition, humidity, precipitation, timestamp))
+    cur.execute('''SELECT latitude, longitude FROM DisneyParks''')
+    results = cur.fetchall()
+
+    for (lat, lon) in results:
+        params['latitude'] = lat
+        params['longitude'] = lon
+        response = requests.get(url, params=params)
+        data = response.json()
+
+        cur.execute(''' 
+        INSERT INTO Weather (latitude, longitude, temperature, precipitation, rain, cloud_cover, time_accessed)
+        VALUES (?, ?, ?, ?, ?, ?, ?)''',
+        (lat, lon, data['current']['temperature_2m'], 
+         data['current']['precipitation'], data['current']['rain'], data['current']['cloud_cover'], timestamp))
 
     conn.commit()
     conn.close()
