@@ -79,7 +79,6 @@ def plot_wait_times_vs_temperature():
 
 
 
-
 def test():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
@@ -96,12 +95,14 @@ def test():
     ''')
 
     results = cur.fetchall()
+    conn.close()
 
     print("Average Wait Time per Park when Temperature < 30°C:")
     for row in results:
         print(f"Park: {row[0]} | Avg Wait Time: {row[1]:.2f} min | Temp: {row[2]}°C")
 
-    conn.close()
+    write_results_to_csv(results)
+
 
 import csv
 
