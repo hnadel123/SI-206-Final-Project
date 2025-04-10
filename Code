@@ -78,6 +78,8 @@ def plot_wait_times_vs_temperature():
     plt.show()
 
 
+
+
 def test():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
@@ -101,7 +103,14 @@ def test():
 
     conn.close()
 
+import csv
 
+def write_results_to_csv(results):
+    with open("park_wait_summary.csv", "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Park Name", "Average Wait Time (min)", "Temperature (°C)"])
+        for row in results:
+            writer.writerow([row[0], f"{row[1]:.2f}", row[2]])
 
 
 def main():
