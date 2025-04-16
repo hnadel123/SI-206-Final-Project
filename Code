@@ -81,7 +81,7 @@ def plot_wait_times_vs_temperature():
     plt.scatter(temps, waits, alpha = 0.5)
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Wait Time (minutes)")
-    plt.title("Disneyland Ride Wait Times vs. Temperature")
+    plt.title("Disneyland Park Paris Ride Wait Times vs. Temperature")
     plt.grid(True)
     plt.savefig("Wait Time vs Temp at Disneyland Park Paris.png")
 
@@ -120,7 +120,7 @@ def plot_wait_times_vs_temperature3():
     FROM Weather
     JOIN DisneyParks ON Weather.latitude = DisneyParks.latitude
     JOIN DisneyRides ON DisneyRides.park_id = DisneyParks.id
-    WHERE DisneyParks.name = "Disneyland Hong Kong"
+    WHERE DisneyParks.name = "Epcot"
 ''')
     results = cur.fetchall()
     conn.close()
@@ -133,9 +133,35 @@ def plot_wait_times_vs_temperature3():
     plt.scatter(temps, waits, alpha = 0.5)
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Wait Time (minutes)")
-    plt.title("Disneyland Ride Wait Times vs. Temperature")
+    plt.title("Epcot Ride Wait Times vs. Temperature")
     plt.grid(True)
-    plt.savefig("Wait Time vs Temp at Disneyland3.png")
+    plt.savefig("Wait Time vs Temp at Epcot.png")
+
+def plot_wait_times_vs_temperature4():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute('''
+    SELECT Weather.temperature, DisneyRides.wait_time
+    FROM Weather
+    JOIN DisneyParks ON Weather.latitude = DisneyParks.latitude
+    JOIN DisneyRides ON DisneyRides.park_id = DisneyParks.id
+    WHERE DisneyParks.name = "Disney Magic Kingdom"
+''')
+    results = cur.fetchall()
+    conn.close()
+    
+
+    temps = [row[0] for row in results]
+    waits = [row[1] for row in results]
+
+    plt.figure()
+    plt.scatter(temps, waits, alpha = 0.5)
+    plt.xlabel("Temperature (°C)")
+    plt.ylabel("Wait Time (minutes)")
+    plt.title("Disney Magic Kingdom Ride Wait Times vs. Temperature")
+    plt.grid(True)
+    plt.savefig("Wait Time vs Temp at Disney Magic Kingdom.png")
 
 
 
@@ -184,6 +210,7 @@ def main():
     plot_wait_times_vs_temperature() 
     plot_wait_times_vs_temperature2()
     plot_wait_times_vs_temperature3()
+    plot_wait_times_vs_temperature4()
 
 
 if __name__ == '__main__':
