@@ -69,6 +69,7 @@ def plot_wait_times_vs_temperature():
     FROM Weather
     JOIN DisneyParks ON Weather.latitude = DisneyParks.latitude
     JOIN DisneyRides ON DisneyRides.park_id = DisneyParks.id
+    WHERE DisneyParks.name = "Disneyland Park Paris"
 ''')
     results = cur.fetchall()
     conn.close()
@@ -76,7 +77,7 @@ def plot_wait_times_vs_temperature():
     temps = [row[0] for row in results]
     waits = [row[1] for row in results]
 
-    plt.scatter(temps, waits)
+    plt.scatter(temps, waits, alpha = 0.5)
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Wait Time (minutes)")
     plt.title("Disneyland Ride Wait Times vs. Temperature")
