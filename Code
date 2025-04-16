@@ -63,7 +63,13 @@ def plot_wait_times_vs_temperature():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    cur.execute('SELECT temperature, wait_time FROM CombinedData')
+    #cur.execute('SELECT temperature, wait_time FROM CombinedData')
+    cur.execute('''
+    SELECT Weather.temperature, DisneyRides.wait_time
+    FROM Weather
+    JOIN DisneyParks ON Weather.latitude = DisneyParks.latitude
+    JOIN DisneyRides ON DisneyRides.park_id = DisneyParks.id
+''')
     results = cur.fetchall()
     conn.close()
 
@@ -75,7 +81,8 @@ def plot_wait_times_vs_temperature():
     plt.ylabel("Wait Time (minutes)")
     plt.title("Disneyland Ride Wait Times vs. Temperature")
     plt.grid(True)
-    plt.show()
+    plt.savefig("Wait Time vs Temp.png")
+
 
 
 
@@ -120,6 +127,8 @@ def main():
     Nadia.fetch_disneyland_data(timestamp)
     hannah.fetch_weather_data(timestamp)
     test()
+    plot_wait_times_vs_temperature()
+
 
 if __name__ == '__main__':
     main()
