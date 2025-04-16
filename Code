@@ -63,7 +63,6 @@ def plot_wait_times_vs_temperature():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    #cur.execute('SELECT temperature, wait_time FROM CombinedData')
     cur.execute('''
     SELECT Weather.temperature, DisneyRides.wait_time
     FROM Weather
@@ -73,16 +72,70 @@ def plot_wait_times_vs_temperature():
 ''')
     results = cur.fetchall()
     conn.close()
+    
 
     temps = [row[0] for row in results]
     waits = [row[1] for row in results]
 
+    plt.figure()
     plt.scatter(temps, waits, alpha = 0.5)
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Wait Time (minutes)")
     plt.title("Disneyland Ride Wait Times vs. Temperature")
     plt.grid(True)
-    plt.savefig("Wait Time vs Temp.png")
+    plt.savefig("Wait Time vs Temp at Disneyland Park Paris.png")
+
+def plot_wait_times_vs_temperature2():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute('''
+    SELECT Weather.temperature, DisneyRides.wait_time
+    FROM Weather
+    JOIN DisneyParks ON Weather.latitude = DisneyParks.latitude
+    JOIN DisneyRides ON DisneyRides.park_id = DisneyParks.id
+    WHERE DisneyParks.name = "Disneyland"
+''')
+    results = cur.fetchall()
+    conn.close()
+    
+
+    temps = [row[0] for row in results]
+    waits = [row[1] for row in results]
+
+    plt.figure()
+    plt.scatter(temps, waits, alpha = 0.5)
+    plt.xlabel("Temperature (°C)")
+    plt.ylabel("Wait Time (minutes)")
+    plt.title("Disneyland Ride Wait Times vs. Temperature")
+    plt.grid(True)
+    plt.savefig("Wait Time vs Temp at Disneyland.png")
+
+def plot_wait_times_vs_temperature3():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute('''
+    SELECT Weather.temperature, DisneyRides.wait_time
+    FROM Weather
+    JOIN DisneyParks ON Weather.latitude = DisneyParks.latitude
+    JOIN DisneyRides ON DisneyRides.park_id = DisneyParks.id
+    WHERE DisneyParks.name = "Disneyland Hong Kong"
+''')
+    results = cur.fetchall()
+    conn.close()
+    
+
+    temps = [row[0] for row in results]
+    waits = [row[1] for row in results]
+
+    plt.figure()
+    plt.scatter(temps, waits, alpha = 0.5)
+    plt.xlabel("Temperature (°C)")
+    plt.ylabel("Wait Time (minutes)")
+    plt.title("Disneyland Ride Wait Times vs. Temperature")
+    plt.grid(True)
+    plt.savefig("Wait Time vs Temp at Disneyland3.png")
 
 
 
@@ -128,7 +181,9 @@ def main():
     Nadia.fetch_disneyland_data(timestamp)
     hannah.fetch_weather_data(timestamp)
     test()
-    plot_wait_times_vs_temperature()
+    plot_wait_times_vs_temperature() 
+    plot_wait_times_vs_temperature2()
+    plot_wait_times_vs_temperature3()
 
 
 if __name__ == '__main__':
