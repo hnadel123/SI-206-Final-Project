@@ -76,11 +76,12 @@ def plot_wait_times_vs_temperature():
     waits = [row[1] for row in results]
 
     plt.figure()
-    plt.scatter(temps, waits, alpha = 0.5)
+    plt.scatter(temps, waits, alpha = 0.5, label=" Observed Wait Times (Lighter = Less Frequent) ")
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Wait Time (minutes)")
     plt.title("Disneyland Park Paris Ride Wait Times vs. Temperature")
     plt.grid(True)
+    plt.legend()
     plt.savefig("Wait Time vs Temp at Disneyland Park Paris.png")
 
 def plot_wait_times_vs_temperature2():
@@ -102,11 +103,12 @@ def plot_wait_times_vs_temperature2():
     waits = [row[1] for row in results]
 
     plt.figure()
-    plt.scatter(temps, waits, alpha = 0.5)
+    plt.scatter(temps, waits, alpha = 0.5, label=" Observed Wait Times (Lighter = Less Frequent) ")
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Wait Time (minutes)")
     plt.title("Disneyland Ride Wait Times vs. Temperature")
     plt.grid(True)
+    plt.legend()
     plt.savefig("Wait Time vs Temp at Disneyland.png")
 
 def plot_wait_times_vs_temperature3():
@@ -128,11 +130,12 @@ def plot_wait_times_vs_temperature3():
     waits = [row[1] for row in results]
 
     plt.figure()
-    plt.scatter(temps, waits, alpha = 0.5)
+    plt.scatter(temps, waits, alpha = 0.5, label=" Observed Wait Times (Lighter = Less Frequent) ")
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Wait Time (minutes)")
     plt.title("Epcot Ride Wait Times vs. Temperature")
     plt.grid(True)
+    plt.legend()
     plt.savefig("Wait Time vs Temp at Epcot.png")
 
 def plot_wait_times_vs_temperature4():
@@ -154,11 +157,12 @@ def plot_wait_times_vs_temperature4():
     waits = [row[1] for row in results]
 
     plt.figure()
-    plt.scatter(temps, waits, alpha = 0.5)
+    plt.scatter(temps, waits, alpha = 0.5, label=" Observed Wait Times (Lighter = Less Frequent) ")
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Wait Time (minutes)")
     plt.title("Disney Magic Kingdom Ride Wait Times vs. Temperature")
     plt.grid(True)
+    plt.legend()
     plt.savefig("Wait Time vs Temp at Disney Magic Kingdom.png")
 
 

@@ -1,5 +1,15 @@
 Park Name,Average Wait Time (min),Temperature (°C),LatestUpdate
-Disneyland,15.71,18.2,0
-Disneyland,15.71,18.3,1
-Disneyland Park Paris,6.83,12.6,2
-Disneyland Park Paris,6.83,12.9,3
+Disney California Adventure,10.48,18.2,0
+Disney California Adventure,10.48,18.3,1
+Disney California Adventure,10.48,19.0,2
+Disneyland,15.00,18.2,3
+Disneyland,15.00,18.3,4
+Disneyland,15.00,19.0,5
+Disneyland Park Paris,6.83,12.4,6
+Disneyland Park Paris,6.83,12.6,7
+Disneyland Park Paris,6.83,12.9,8
+Shanghai Disney Resort,0.16,19.2,9
+Shanghai Disney Resort,0.16,19.3,10
+Walt Disney Studios Paris,10.00,12.5,11
+Walt Disney Studios Paris,10.00,12.8,12
+Walt Disney Studios Paris,10.00,13.0,13
