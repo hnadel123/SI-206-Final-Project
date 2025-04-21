@@ -1,2 +1,5 @@
-Park Name,Average Wait Time (min),Temperature (°C)
-Disneyland Park Paris,6.60,12.9
+Park Name,Average Wait Time (min),Temperature (°C),LatestUpdate
+Disneyland,15.71,18.2,0
+Disneyland,15.71,18.3,1
+Disneyland Park Paris,6.83,12.6,2
+Disneyland Park Paris,6.83,12.9,3

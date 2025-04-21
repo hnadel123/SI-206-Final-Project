@@ -194,9 +194,13 @@ import csv
 def write_results_to_csv(results):
     with open("park_wait_summary.csv", "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Park Name", "Average Wait Time (min)", "Temperature (°C)"])
+        writer.writerow(["Park Name", "Average Wait Time (min)", "Temperature (°C)",'LatestUpdate'])
+        index = 0
         for row in results:
-            writer.writerow([row[0], f"{row[1]:.2f}", row[2]])
+            writer.writerow([row[0], f"{row[1]:.2f}", row[2], index])
+            index += 1
+
+    
 
 
 def main():
