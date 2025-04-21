@@ -20,9 +20,9 @@ def fetch_disneyland_data(timestamp):
 
     for org in parks:
         cur.execute('''
-        INSERT OR IGNORE INTO DisneyParks (name, country, continent, latitude, longitude, timezone, api_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)''', 
-                    (org['name'], org['country'], org['continent'], org['latitude'], org['longitude'], org['timezone'], org['id'])
+        INSERT OR IGNORE INTO DisneyParks (name, latitude, longitude, api_id)
+                    VALUES (?, ?, ?, ?)''', 
+                    (org['name'], org['latitude'], org['longitude'], org['id'])
                     )
     conn.commit()
 

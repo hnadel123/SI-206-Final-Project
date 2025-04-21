@@ -21,14 +21,12 @@ def create_tables():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
+
     cur.execute('''CREATE TABLE IF NOT EXISTS DisneyParks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
-    country INTEGER,
-    continent TEXT,
     latitude REAL,
     longitude REAL,
-    timezone TEXT,
     api_id INTEGER UNIQUE
     )''')
 
